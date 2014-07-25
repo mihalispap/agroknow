@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -25,6 +24,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,18 +60,10 @@ public class Service {
 	    @Path("/harvest/")
 	    @Produces("text/xml")
 	    @Consumes(value={"text/xml"})
-	    public Response addHarvest(Harvest harvest ) throws IOException, InterruptedException {
+	    public Response addHarvest(Harvest harvest ) {
 		
 		   logger.info("Post.Inside addHarvest");
 
-		
-		
-		   /*harvest.setId(++currentId);
-    	System.out.println("---- Harvester id is: " + currentId);
-    	harvests.put(harvest.getId(), harvest);
-    	harvest.addToHarvestList(harvest.getId(),harvest);*/
-		 	
-	        	
 		    	//add to list 
 		    	
 		    	harvest.setId(++currentId);//
@@ -79,44 +71,9 @@ public class Service {
 		    	//list.addToHarvestList(harvest.getId(),harvest);
 		    	harvests.put(currentId, harvest);
 		    	harvest.addToHarvestList(harvest.getId(),harvest);
-		    	FileWriter fstream = new FileWriter(harvest.getPrefix()+".txt");//C:\\harvest\\
-		    	logger.info("---- File : " + harvest.getPrefix()+".txt created");
-    	        BufferedWriter out = new BufferedWriter(fstream);
-		    	
-				try {
-					
-					Process	ps = Runtime.getRuntime().exec(new String[]{"java","-jar","harvester.jar",harvest.getUrl(),harvest.getDirectory(),harvest.getPrefix()});
-					ps.waitFor();
-					System.out.println("process created");
-					java.io.InputStream is = ps.getInputStream();
-			    	// byte b[] = new byte[is.available()];
-			    	 
-					 logger.info("----------------harvest pending .....--------------------");
-			         for (int i = 0; i < is.available(); i++) {
-			        	harvest.setStatus("pending");
-			            System.out.println("" + is.read());
-			            out.write(is.read());
-			            
-			         }
-			         
-			         out.close();
-			    	// wait for 10 seconds and then destroy the process
-			         Thread.sleep(10000);
-			         harvest.setStatus("completed");
-			         logger.info("-------------------harvest completed--------------------");
-			         ps.destroy();
-			    	 
-			       //  return  Response.ok().type("application/xml").entity(harvest).build();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					//e.printStackTrace();
-					  harvest.setStatus("broken");
-					  logger.info("-------------------thete is a broken link---------------");
-					//return Response.notModified().build();	
-				}
+		    	harvest.startHarvest(harvest);
 		    	
 		    	 
-		    //	return  Response.ok().type("application/xml").entity(harvest).build();
 	        // return Response.notModified().build();	
 		    	
 	    
@@ -137,13 +94,42 @@ public class Service {
 	        
 	        Harvest h = harvests.get(idNumber);
 	    	System.out.println("---- Harveste with id : " + id);
-
+	    	
+	    	if(h == null){
+	    		Response.status(Response.Status.NOT_FOUND).entity("Service Not Found").build();
+	    		
+	    	}
 	       // h = h.getHarvest(idNumber);//list.getHarvest(idNumber);
 	        	
 	        
 	        return h;
 	    }
 	   
+	   
+	   @GET
+	    @Path("/harvest/{id}.zip/")	    
+	    @Produces("application/zip")
+	    public Response getZip(@PathParam("id") String id) {
+		   logger.info("inside getZip Method,harvest with id: "+id);
+		   System.out.println("Start");
+	
+		   
+	        long idNumber = Long.parseLong(id);	        
+	        
+	        Harvest h = harvests.get(idNumber);
+	    	System.out.println("---- Harveste with id : " + id);
+	    	
+	    	if(h == null){
+	    		Response.status(Response.Status.NOT_FOUND).entity("File Not Found").build();
+	    		
+	    	}
+	       // h = h.getHarvest(idNumber);//list.getHarvest(idNumber);
+	        	
+	        
+	    	 return  Response.ok().type("application/zip").entity(h).build();
+	    	
+	    }
+	   	
 	   
 	    final void init(){
 		   logger.info("inside Service init() method ");

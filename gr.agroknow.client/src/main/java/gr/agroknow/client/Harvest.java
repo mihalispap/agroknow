@@ -1,7 +1,10 @@
 package gr.agroknow.client;
 
 
-
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -104,6 +107,75 @@ public class Harvest {
 			
 			return h;
 		} 
+		
+		
+		
+		public int startHarvest(Harvest harvest){
+			
+			
+	    	
+	    	
+			try {
+				
+				//FileWriter fstream = new FileWriter(harvest.getPrefix()+".txt");//C:\\harvest\\
+		//    	logger.info("---- File : " + harvest.getPrefix()+".txt created");
+		       // BufferedWriter out = new BufferedWriter(fstream);
+		        
+				Process	ps = Runtime.getRuntime().exec(new String[]{"java "," -jar","harvester.jar ",harvest.getUrl()+" ",harvest.getDirectory()+" ",harvest.getPrefix()});
+				
+					System.out.println("process created");
+					try {
+						ps.waitFor();
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}				
+					
+				
+				java.io.InputStream is = ps.getInputStream();
+		    	// byte b[] = new byte[is.available()];
+				harvest.setStatus("pending"); 
+				// logger.info("----------------harvest pending .....--------------------");
+		         for (int i = 0; i < is.available(); i++) {		        	
+		            System.out.println("" + is.read());
+		           // out.write(is.read());		            
+		         }
+		         
+		        // out.close();
+		    	// wait for 10 seconds and then destroy the process
+		         try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		         harvest.setStatus("completed");
+		         //logger.info("-------------------harvest completed--------------------");
+		         ps.destroy();
+		         
+		         //zipping the data folder to {id}.zip
+		         String fileName = Long.toString(harvest.getId());
+		         ZipUtils appZip = new  ZipUtils(fileName, harvest.getDirectory());//ZipUtils();
+	             appZip.generateFileList(new File(appZip.getSrcFolder()));
+	             appZip.zipIt(appZip.getOutputFile());
+		         
+		         
+		         
+		    	 
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+				  harvest.setStatus("broken");
+				  //logger.info("-------------------thete is a broken link---------------");
+			}
+			
+			
+			
+			
+			return 0;
+		}
+		
+		
 	
 	
 }
