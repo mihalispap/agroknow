@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+  xmlns:beans="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                      http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd" >
+
+    <beans:bean id="propertySourcesPlaceholderConfigurer" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer"/>
+
+    <!-- pre-auth authentication provider -->
+    <beans:bean id="preAuthenticatedAuthenticationProvider" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+        <beans:property name="preAuthenticatedUserDetailsService" ref="userDetailsService"/>
+    </beans:bean>
+
+    <!-- authentication manager -->
+    <authentication-manager erase-credentials="true" id="authenticationManager" alias="authenticationManager" >
+        <authentication-provider ref="preAuthenticatedAuthenticationProvider" />
+    </authentication-manager>
+
+    <!-- authentication entry point -->
+    <beans:bean id="entryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
+
+    <!-- method level security -->
+    <global-method-security secured-annotations="enabled" pre-post-annotations="enabled" authentication-manager-ref="authenticationManager"/>
+    
+    <!-- http security exclusions -->
+    <http pattern="/netbeans-tomcat-status-test" security="none" /><!-- allow netbeans to check server status -->
+    <http pattern="/favicon.ico" security="none" /><!-- exclude favicon from security checks -->
+
+    <!-- http security -->
+    <http create-session="stateless" authentication-manager-ref="authenticationManager" entry-point-ref="entryPoint"  >
+        <custom-filter position="PRE_AUTH_FILTER" ref="tokenBasedPreAuthenticatedProcessingFilter" />
+
+        <intercept-url pattern="/" access="ROLE_ANONYMOUS,ROLE_USER" />
+        <intercept-url pattern="/register" access="ROLE_ANONYMOUS,ROLE_USER" />
+        <!--<intercept-url pattern="/**" access="ROLE_USER" />-->
+        <intercept-url pattern="/**" access="ROLE_ANONYMOUS,ROLE_USER" />
+        <intercept-url pattern="/authenticated*" access="ROLE_USER" />
+
+        <!--port-mappings><port-mapping http="8080" https="8443"/></port-mappings-->
+    </http>
+</beans:beans>

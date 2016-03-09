@@ -1,0 +1,41 @@
+input {
+   file {
+    # Wildcards work, here :)
+    path => [ "C:/workspace-sts/agroknow/agro-linkchecker/all_urls.log" ]
+	tags => ["urls-check-result"]
+	type => "urls_log"
+	start_position => "beginning"
+   }
+   file {
+    # Wildcards work, here :)
+    path => [ "C:/workspace-sts/agroknow/agro-linkchecker/redirection_urls.log" ]
+	tags => ["urls-check-result"]
+	type => "redirect_log"
+	start_position => "beginning"
+   }
+   file {
+    # Wildcards work, here :)
+    path => [ "C:/workspace-sts/agroknow/agro-linkchecker/metrics.log" ]
+	tags => ["urls-check-metrics"]
+   }
+}
+
+filter {
+  if [type] == "urls_log" {
+	  csv {
+			columns => ["check_date", "domain", "file_identifier", "url", "status_family", "status_code"]
+			separator => "||"
+	  }
+  }
+  else if [type] == "redirect_log" {
+	  csv {
+			columns => ["check_date", "domain", "file_identifier", "url", "status_family", "status_code", "redirect_to"]
+			separator => "||"
+	  }
+  }
+}
+
+output {
+  stdout { }
+  elasticsearch { embedded => true }
+}

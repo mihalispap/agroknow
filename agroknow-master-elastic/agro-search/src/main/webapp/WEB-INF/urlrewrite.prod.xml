@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.0//EN" "http://tuckey.org/res/dtds/urlrewrite3.0.dtd">
+<urlrewrite>
+    <rule>
+        <name>Add CORS HTTP headers to allow GLN origin (PRODUCTION ONLY)</name>
+        <condition type="header" name="origin" operator="equal" next="or">^(http://greenlearningnetwork\.com)$</condition>
+        <condition type="header" name="origin" operator="equal" next="or">^(http://greenlearningnetwork\.org)$</condition>
+        <condition type="header" name="origin" operator="equal" next="or">^(http://83\.212\.100\.142)$</condition>
+        <from>^.*$</from>
+        <set type="response-header" name="Access-Control-Allow-Origin">%1</set>
+        <set type="response-header" name="Access-Control-Allow-Credentials">true</set>
+        <set type="response-header" name="Access-Control-Allow-Headers">X-Requested-With</set>
+    </rule>
+</urlrewrite>

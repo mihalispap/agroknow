@@ -1,0 +1,22 @@
+# Misc #
+*~
+*.class
+target
+classes
+*.log
+.externalToolBuilders
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Eclipse files #
+.project
+.settings
+.classpath
+
+# NetBeans files #
+nbactions*
+nb-configuration.xml
+

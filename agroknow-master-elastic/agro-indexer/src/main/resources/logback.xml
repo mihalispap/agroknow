@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+	<!-- Console APPENDER -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+    <!-- File APPENDER -->
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/indexer.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>indexer.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+			<!-- keep 30 days' worth of history -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+    <!-- Metrics File APPENDER -->
+	<appender name="METRICS_FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/metrics.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>metrics.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+			<!-- keep 30 days' worth of history -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>%d{yyyy-MM-dd}, %msg%n</pattern>
+		</encoder>
+	</appender>
+
+    <!-- LOGGERS -->
+	<logger name="indexer.metrics.log" level="DEBUG" additivity="false">
+		<appender-ref ref="METRICS_FILE" />
+        <appender-ref ref="STDOUT" />
+	</logger>
+
+	<logger name="com.agroknow" level="INFO" additivity="false">
+		<appender-ref ref="FILE" />
+        <appender-ref ref="STDOUT" />
+	</logger>
+
+	<root level="WARN">
+		<appender-ref ref="FILE" />
+        <appender-ref ref="STDOUT" />
+	</root>
+</configuration>
