@@ -94,6 +94,31 @@ public class CheckIndex {
 			//doclist.get(0).get("ARN");
 			
 			//System.out.println(doclist.get(0).get("ARN"));
+			/*TODO: 
+			 * 	perhaps have here a combo value and split on char to parse @XMLRunnable
+			 * */
+			arn=doclist.get(0).get("ARN").toString();
+			System.out.println("ARN in func:"+arn);
+			return arn;							
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (SolrServerException e) {
+			//no action
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		return "";
+	}
+
+	public String checkTitle(String title, String arn, String prefix){
+		String query = "+title:(\""+title+"\")";
+		try {
+			SolrQuery squery = new SolrQuery(query);
+			SolrDocumentList doclist= QueryUtil.getSolrDocumentResult(IndexServerFactory.startSolr(), squery);
+			
+			//doclist.get(0).get("ARN");
+			
+			//System.out.println(doclist.get(0).get("ARN"));
 			arn=doclist.get(0).get("ARN").toString();
 			System.out.println("ARN in func:"+arn);
 			return arn;							

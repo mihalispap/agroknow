@@ -82,12 +82,25 @@ public class XMLRunnable implements Runnable{
 		/*At this point the only records having arns are duplicate ones!*/
 		for(int i=0;i<records.size();i++)
 		{
-			if(records.get(i).getARN()==null)
+			if(records.get(i).getARN()!=null)
+			{
 				no_duplicates++;
+				System.out.println("Have duplicate");
+				records.get(i).setARN(null);
+			}
 		}
-		System.out.println("Duplicates:"+no_duplicates+", arnprefix:"+arnPrefix);
+		//System.out.println("Duplicates:"+no_duplicates+", arnprefix:"+arnPrefix);
 		//write records
 		WriterFactory.getInstance(outputPath, arnPrefix).addDocumentsAndWrite(records);
 	}
 
 }
+
+
+
+
+
+
+
+
+
