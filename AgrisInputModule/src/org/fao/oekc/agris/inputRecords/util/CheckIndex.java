@@ -97,8 +97,12 @@ public class CheckIndex {
 			/*TODO: 
 			 * 	perhaps have here a combo value and split on char to parse @XMLRunnable
 			 * */
-			arn=doclist.get(0).get("ARN").toString();
-			System.out.println("ARN in func:"+arn);
+			//arn=doclist.get(0).get("ARN").toString();
+			arn="";
+			for(int i=0;i<doclist.size();i++)
+				arn+=","+doclist.get(i).get("ARN");
+			
+			//System.out.println("ARN in func:"+arn);
 			return arn;							
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

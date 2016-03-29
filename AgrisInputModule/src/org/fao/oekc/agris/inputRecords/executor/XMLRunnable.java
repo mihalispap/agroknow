@@ -79,6 +79,8 @@ public class XMLRunnable implements Runnable{
 			e.printStackTrace();
 		}
 
+		//System.out.println(arnPrefix);
+		String current_prefix=arnPrefix.substring(0,2)+arnPrefix.charAt(6);
 		/*At this point the only records having arns are duplicate ones!*/
 		for(int i=0;i<records.size();i++)
 		{
@@ -86,7 +88,31 @@ public class XMLRunnable implements Runnable{
 			{
 				no_duplicates++;
 				System.out.println("Have duplicate");
-				records.get(i).setARN(null);
+				String[]arns;
+				arns=records.get(i).getARN().split(",");
+				
+				records.get(i).setARN(arns[1]);
+				for(int j=0;j<arns.length;j++)
+				{
+					//System.out.println(arns[j]);
+					
+					if(arns[j]!=null && !arns[j].isEmpty())
+					{
+						try
+						{
+							String prefix=arns[j].substring(0,2)+arns[j].charAt(6);
+							if(!prefix.equals(current_prefix))
+								records.get(i).setARN(null);
+						}
+						catch(java.lang.StringIndexOutOfBoundsException e)
+						{}
+						
+					}
+					
+				}
+				
+				//System.out.println("ARN"+records.get(i).getARN());
+				//records.get(i).setARN(null);
 			}
 		}
 		//System.out.println("Duplicates:"+no_duplicates+", arnprefix:"+arnPrefix);
