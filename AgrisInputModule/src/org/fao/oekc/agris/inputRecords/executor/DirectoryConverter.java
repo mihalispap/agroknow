@@ -72,12 +72,15 @@ public class DirectoryConverter {
 					//System.out.println("++ start: "+filename);
 					//DO THE JOB
 					Runnable worker = new XMLRunnable(contentFile, outpurDir, saxParser, arnPrefix, globalDuplicatesRemoval, sourceFormat, lines, titlesAdded);
+					//System.out.println("OUtfrom executor");
 					executor.execute(worker);
+					
 				}
 				else if(filename.endsWith(".xls")) {
 					//DO THE JOB
 					Runnable worker = new ExcelRunnable(contentFile, outpurDir, arnPrefix, globalDuplicatesRemoval, sourceFormat);
 					executor.execute(worker);
+					
 				}
 				else {
 					//add a directory

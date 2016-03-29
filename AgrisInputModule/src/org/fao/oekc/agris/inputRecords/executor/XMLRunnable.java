@@ -29,6 +29,8 @@ public class XMLRunnable implements Runnable{
 	private String sourceFormat;
 	private Set<String> lines;
 	private List<String> titlesAdded;
+	
+	private int no_duplicates=0;
 
 	/**
 	 * Constructor
@@ -62,7 +64,8 @@ public class XMLRunnable implements Runnable{
 		List<AgrisApDoc> records = new ArrayList<AgrisApDoc>();
 
 		//parser
-		DefaultHandler parser = (new XMLDispatcher()).dispatchXML(sourceFormat, records, arnPrefix, titlesAdded, globalDuplRem, lines);
+		DefaultHandler parser = (new XMLDispatcher()).dispatchXML(sourceFormat, records, 
+				arnPrefix, titlesAdded, globalDuplRem, lines);
 
 		try {
 			if(parser!=null)
@@ -76,6 +79,13 @@ public class XMLRunnable implements Runnable{
 			e.printStackTrace();
 		}
 
+		/*At this point the only records having arns are duplicate ones!*/
+		for(int i=0;i<records.size();i++)
+		{
+			if(records.get(i).getARN()==null)
+				no_duplicates++;
+		}
+		System.out.println("Duplicates:"+no_duplicates+", arnprefix:"+arnPrefix);
 		//write records
 		WriterFactory.getInstance(outputPath, arnPrefix).addDocumentsAndWrite(records);
 	}
