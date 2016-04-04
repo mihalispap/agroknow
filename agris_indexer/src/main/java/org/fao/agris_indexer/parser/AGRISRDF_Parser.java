@@ -216,7 +216,6 @@ public class AGRISRDF_Parser extends DefaultHandler {
 	 */
 	public void startElement (String namespaceURI, String localName, String rawName, Attributes atts) throws SAXException {	
 
-		//ARN, center, URI, date
 		if(rawName.equalsIgnoreCase("bibo:Article")){
 			tmpDoc = new SolrInputDocument();
 			//look for URI

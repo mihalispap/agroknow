@@ -11,8 +11,8 @@
 # In case of indexing a specific year, a list of centers to be exluded can be decalared in default.properties
 #
 # Examples of usage:
-# ./index_AGRIS_AP.sh
-# ./index_AGRIS_AP.sh /work/agris/RDF_Output/2015
+# ./index_AGRIS_RDF.sh
+# ./index_AGRIS_RDF.sh /work/agris/RDF_Output/2016
 #
 
 cd bin 
